@@ -4,8 +4,9 @@
 
 {% block head %}
 {{ super() }}
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 {% endblock %}
 
 {% block navbar %}
@@ -18,11 +19,41 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">MonkeyBook</a>
+            {% if current_user.is_authenticated() %}
+                <a class="navbar-brand" href="{{ url_for('main.view_profiles') }}">MonkeyBook</a>
+            {% else %}
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">MonkeyBook</a>
+            {% endif %}
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="/">Home</a></li>
+                {#% if current_user.is_authenticated() %#}
+            <!--        <li><a href="{#{ url_for('main.view_profiles') }#}">Home</a></li>
+                {#% else %#}
+                    <li><a href="{#{ url_for('main.index') }#}">Home</a></li>
+                {#% endif %#} -->
+                {% if current_user.is_authenticated() %}
+                    <li><a href="{{ url_for('main.monkey', monkeyname=current_user.monkeyname) }}">Your profile</a></li>
+                    <li><a href="{{ url_for('main.view_profiles') }}">About</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('main.about') }}">About</a></li>
+                {% endif %}
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated() %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="{{ current_user.gravatar(size=18) }}"> {{current_user.monkeyname }} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('auth.change_password') }}">Change Password</a></li>
+                        <!--<li><a href="{#{ url_for('auth.change_email_request') }#}">Change Email</a></li>-->
+                        <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

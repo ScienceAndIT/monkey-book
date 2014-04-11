@@ -1,16 +1,20 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}MonkeyBook{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
-    {% if not known %}
-    <p>Pleased to meet you!</p>
+    {% if current_user.is_authenticated() %}
+        <h1>Hello, {{ current_user.monkeyname }}  </h1>
     {% else %}
-    <p>Happy to see you again!</p>
+        <h1>Welcome to the world of monkeys!</h1>
+    <div id="monkey-image">
+            <img src="{{ url_for('static', filename='book_monkey.jpg') }}" alt="Monkey with book image">
+    </div>
+    <h4>You are here from {{ moment(current_time).fromNow(True, refresh=True) }}</h4>
+    <h4>Why don't you join us?</h4>
+    <a href="{{ url_for('auth.register') }}">Click here to register !</a>
     {% endif %}
+
 </div>
-{{ wtf.quick_form(form) }}
 {% endblock %}
