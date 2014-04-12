@@ -1,12 +1,15 @@
 import unittest
 from app.models import Monkey
+import time
+from datetime import datetime
+from app import db
 
 
 class MonkeyModelTestCase(unittest.TestCase):
 
     def test_password_setter(self):
         m = Monkey(password='cat')
-        self.assertTrme(m.password_hash is not None)
+        self.assertTrue(m.password_hash is not None)
 
     def test_no_password_getter(self):
         m = Monkey(password='cat')
@@ -15,7 +18,7 @@ class MonkeyModelTestCase(unittest.TestCase):
 
     def test_password_verification(self):
         m = Monkey(password='cat')
-        self.assertTrme(m.verify_password('cat'))
+        self.assertTrue(m.verify_password('cat'))
         self.assertFalse(m.verify_password('dog'))
 
     def test_password_salts_are_random(self):
