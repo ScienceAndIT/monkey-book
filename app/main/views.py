@@ -43,7 +43,7 @@ def view_profiles():
 def view_profiles_by_number_of_friends():
     page = int(request.args.get('page', 1))
     pagination = Monkey.query.outerjoin(Follow, Follow.follower_id == Monkey.id).\
-        group_by(Monkey.id).order_by(db.func.count(Follow).desc()).\
+        group_by(Monkey.id).order_by(db.func.count(Follow.follower_id).desc()).\
         paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'], error_out=False)
     profiles = pagination.items
     return render_template('view_profiles_by_number_of_friends.html',
