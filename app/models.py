@@ -16,16 +16,44 @@ class Follow(db.Model):
                             primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+    @staticmethod
+    def generate_fake(count=10):
+        from random import seed, randint
+        import forgery_py
+        seed()
+        monkey_count = Monkey.query.count()
+        for i in range(count):
+            m1 = Monkey.query.offset(randint(0, monkey_count - 1)).first()
+            m2 = Monkey.query.offset(randint(0, monkey_count - 1)).first()
+            f = Follow(follower_id=m1.id, followed_id=m2.id, timestamp=forgery_py.date.date(True))
+            db.session.add(f)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+
 
 # class for best friends
 class BestFriend(db.Model):
     __tablename__ = 'best_friends'
     friend_id = db.Column(db.Integer, db.ForeignKey('monkeys.id'),
                           primary_key=True, unique=True)
-    """best_friend_id = db.Column(db.Integer, db.ForeignKey('monkeys.id'),
-                               primary_key=True)
-                               """
     best_friend_name = db.Column(db.String(64), db.ForeignKey('monkeys.monkeyname'))
+
+    @staticmethod
+    def generate_fake(count=10):
+        from random import seed, randint
+        seed()
+        monkey_count = Monkey.query.count()
+        for i in range(count):
+            m1 = Monkey.query.offset(randint(0, monkey_count - 1)).first()
+            m2 = Monkey.query.offset(randint(0, monkey_count - 1)).first()
+            f = BestFriend(friend_id=m1.id, best_friend_name=m2.monkeyname)
+            db.session.add(f)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
 
 
 # class for creating monkey
@@ -160,22 +188,7 @@ class Monkey(UserMixin, db.Model):
     def __repr__(self):
         return '<Monkey %r>' % self.monkeyname
 
-
-"""
-# table with followers and followed (version without Follow class)
-follows = db.Table('follows',
-                   db.Column('follower_id', db.Integer, db.ForeignKey('monkeys.id')),
-                   db.Column('followed_id', db.Integer, db.ForeignKey('monkeys.id'))
-                   )
-
-
-# table with friends (version without Follow class)
-friends = db.Table('friends',
-                   db.Column('monkey_id', db.Integer, db.ForeignKey('monkeys.id')),
-                   db.Column('friend_id', db.Integer))
-"""
-
-
+# required by Flask
 @login_manager.user_loader
 def load_monkey(monkey_id):
     return Monkey.query.get(int(monkey_id))
