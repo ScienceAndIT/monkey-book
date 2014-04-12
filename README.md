@@ -5,22 +5,22 @@ Mini Facebook for monkeys :)
 
 You can:  
 
-• Add yourself as a monkey  
+• Add yourself as a monkey;  
 
-• View profile of all monkeys  
+• View profiles of all monkeys;  
 
-• Edit profile of monkey (if you're an admin)  
+• Edit profile of your monkey;   
 
-• Remove monkey  
+• Remove monkey (if you're an admin);  
 
-• Friend (follow) and unfriend (unfollow) other monkeys  
+• Friend (follow) and unfriend (unfollow) other monkeys;  
 
-• Each monkey can have multiple friends  
+• Each monkey can have multiple friends;  
 
-• Add best friend to a monkey (only one best friend is allowed)  
+• Add best friend to a monkey (only one best friend is allowed);  
 
-• List monkeys  
+• List monkeys; 
 
-• Show monkeys names, name of the best friend (if any) and number of friends  
+• Show monkeys names, name of the best friend (if any) and number of friends;  
 
-• Sort monkeys by name, name of the best friend and number of friends
+• Sort monkeys by name, name of the best friend and number of friends.
