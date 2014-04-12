@@ -24,7 +24,7 @@ def about():
 
 
 # displaying all profiles sorted by names, default option for viewing monkeys
-@main.route('/profiles/by-names')
+@main.route('/profiles/by-names', methods=['GET', 'POST'])
 @login_required
 def view_profiles():
     page = int(request.args.get('page', 1))
@@ -38,7 +38,7 @@ def view_profiles():
 
 
 # displaying all profiles sorted by number of friends
-@main.route('/profiles/by-number-of-friends')
+@main.route('/profiles/by-number-of-friends', methods=['GET', 'POST'])
 @login_required
 def view_profiles_by_number_of_friends():
     page = int(request.args.get('page', 1))
@@ -51,7 +51,7 @@ def view_profiles_by_number_of_friends():
 
 
 # displaying all profiles sorted by name of the best friend
-@main.route('/profiles/by-name-of-the-best-friend')
+@main.route('/profiles/by-name-of-the-best-friend', methods=['GET', 'POST'])
 @login_required
 def view_profiles_by_name_of_the_best_friend():
     page = int(request.args.get('page', 1))
