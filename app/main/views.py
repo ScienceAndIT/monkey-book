@@ -7,6 +7,7 @@ from .forms import EditProfileForm, EditProfileAdminForm
 from .. import db
 from ..models import Monkey, Follow, BestFriend
 
+
 @main.route('/')
 def index():
     return render_template('index.html',
