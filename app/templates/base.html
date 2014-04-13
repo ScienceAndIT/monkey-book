@@ -34,7 +34,7 @@
                 {#% endif %#} -->
                 {% if current_user.is_authenticated() %}
                     <li><a href="{{ url_for('main.monkey', monkeyname=current_user.monkeyname) }}">Your profile</a></li>
-                    <li><a href="{{ url_for('main.view_profiles') }}">About</a></li>
+                    <li><a href="{{ url_for('main.info') }}">About</a></li>
                 {% else %}
                     <li><a href="{{ url_for('main.about') }}">About</a></li>
                 {% endif %}

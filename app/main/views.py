@@ -24,6 +24,17 @@ def about():
                            current_time=datetime.utcnow())
 
 
+# info about page for logged users
+@login_required
+@main.route('/info')
+def info():
+    message = Markup("More info on <a href='https://github.com/ScienceAndIT/monkey-book' \
+                     target='_blank'> GitHub</a>")
+    flash(message)
+    return render_template('view_profiles_by_names.html',
+                           current_time=datetime.utcnow())
+
+
 # displaying all profiles sorted by names, default option for viewing monkeys
 @main.route('/profiles/by-names', methods=['GET', 'POST'])
 @login_required
