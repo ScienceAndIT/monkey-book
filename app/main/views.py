@@ -31,8 +31,14 @@ def info():
     message = Markup("More info on <a href='https://github.com/ScienceAndIT/monkey-book' \
                      target='_blank'> GitHub</a>")
     flash(message)
+    page = int(request.args.get('page', 1))
+    pagination = Monkey.query.\
+        order_by(Monkey.monkeyname.asc()).paginate(page,
+                                                   per_page=current_app.config['MONKEYS_PER_PAGE'],
+                                                   error_out=False)
+    profiles = pagination.items
     return render_template('view_profiles_by_names.html',
-                           current_time=datetime.utcnow())
+                           profiles=profiles, pagination=pagination)
 
 
 # displaying all profiles sorted by names, default option for viewing monkeys
