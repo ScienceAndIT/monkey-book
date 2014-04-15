@@ -13,6 +13,7 @@ def index():
     return render_template('index.html',
                            current_time=datetime.utcnow())
 
+
 # displaying all profiles sorted by names, default option for viewing monkeys
 @main.route('/profiles/by-names', methods=['GET', 'POST'])
 @login_required
@@ -59,9 +60,9 @@ def view_profiles_by_name_of_the_best_friend():
 def remove_monkey(id):
     monkey = Monkey.query.get_or_404(id)
     page = int(request.args.get('page', 1))
-    pagination = Monkey.query.order_by(Monkey.monkeyname.asc()).paginate(page,
-                                                                         per_page=current_app.config['MONKEYS_PER_PAGE'],
-                                                                         error_out=False)
+    pagination = Monkey.query.order_by(Monkey.monkeyname.asc())\
+        .paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'],
+                  error_out=False)
     profiles = pagination.items
     if monkey.is_administrator():
         flash("You can't remove admin monkey!")
@@ -101,7 +102,6 @@ def edit_profile():
 # profile's edition for admin
 @main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
 @login_required
-#@admin_required
 def edit_profile_admin(id):
     monkey = Monkey.query.get_or_404(id)
     form = EditProfileAdminForm(monkey=monkey)
