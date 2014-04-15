@@ -20,12 +20,6 @@ class EditProfileForm(Form):
                                           'Monkey names must have only letters, '
                                           'numbers, dots or underscores')])
     age = IntegerField('Real age', validators=[Required()])
-
-    #role = IntegerField('Role (0 - user, 1 - admin)', validators=[Required()])
-    #confirmed = BooleanField('Confirmed')
-    #name = StringField('Real name', validators=[Length(0, 64)])
-    #location = StringField('Location', validators=[Length(0, 64)])
-    #about_me = TextAreaField('About me')
     submit = SubmitField('Submit changes')
 
 
@@ -39,17 +33,10 @@ class EditProfileAdminForm(Form):
     age = IntegerField('Real age', validators=[Required()])
     role = IntegerField('Role (0 - user, 1 - admin)', validators=[Required()])
     confirmed = BooleanField('Confirmed')
-
-    #name = StringField('Real name', validators=[Length(0, 64)])
-    #location = StringField('Location', validators=[Length(0, 64)])
-    #about_me = TextAreaField('About me')
     submit = SubmitField('Submit changes')
 
     def __init__(self, monkey, *args, **kwargs):
         super(EditProfileAdminForm, self).__init__(*args, **kwargs)
-        """self.role.choices = [(role.id, role.name)
-                             for role in Role.query.order_by(Role.name).all()]
-                             """
         self.monkey = monkey
 
     def validate_email(self, field):
