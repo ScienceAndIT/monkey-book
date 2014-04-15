@@ -4,14 +4,14 @@
 {% block title %}MonkeyBook{% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>Our monkeys</h1>
-    <h5>Sort by
-        <a href="{{ url_for('.view_profiles') }}" class="navbar-link"> name</a> or by
-        <a href="{{ url_for('.view_profiles_by_name_of_the_best_friend') }}" class="navbar-link"> best friend's name</a> or by
-        <a href="{{ url_for('.view_profiles_by_number_of_friends') }}" class="navbar-link"> number of friends</a>
-    </h5>
-</div>
+    <div class="page-header">
+        <h1>Our monkeys</h1>
+        <h5>Sort by
+            <a href="{{ url_for('.view_profiles') }}" class="navbar-link"> name</a> or by
+            <a href="{{ url_for('.view_profiles_by_name_of_the_best_friend') }}" class="navbar-link"> best friend's name</a> or by
+            <a href="{{ url_for('.view_profiles_by_number_of_friends') }}" class="navbar-link"> number of friends</a>
+        </h5>
+    </div>
     <ul class="view_profiles">
         {% for profile in profiles %}
             <li class="profile">
@@ -21,7 +21,7 @@
                             <img class="img-rounded profile-thumbnail" src="{{ profile.gravatar(size=40) }}"/>
                             <span class="profile-name"> {{ profile.monkeyname }}</span>
                         </td>
-                        <td class="second-column">Monkey has <b> {{profile.followed.count() }} </b>monkey friends</td>
+                        <td class="second-column">Monkey has <b>{{profile.followed.count() }}</b> monkey friends</td>
                         <td class="third-column">
                             {% if profile != current_user %}
                                 {% if not current_user.is_following(profile) %}
@@ -34,7 +34,11 @@
                     </tr>
                     <tr>
                         <td class="first-column">Age: {{ profile.age }}</td>
-                        <td class="second-column">Monkey is a friend for <b> {{profile.followers.count() }}</b> monkeys</td>
+                        <td class="second-column">Monkey is a friend for <b>{{ profile.followers.count()}}</b>
+                            {% if profile.best_friend_followers.count()>0 %}
+                            and best friend for <b>{{ profile.best_friend_followers.count()}}</b>
+                            {% endif %}
+                            monkey(s)</td>
                         <td class="third-column">
                             {% if profile != current_user %}
                                 {% if not current_user.bf_is_following(profile) %}
