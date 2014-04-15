@@ -13,34 +13,6 @@ def index():
     return render_template('index.html',
                            current_time=datetime.utcnow())
 
-
-# info about page
-@main.route('/about')
-def about():
-    message = Markup("More info on <a href='https://github.com/ScienceAndIT/monkey-book' \
-                     target='_blank'> GitHub</a>")
-    flash(message)
-    return render_template('index.html',
-                           current_time=datetime.utcnow())
-
-
-# info about page for logged users
-@login_required
-@main.route('/info')
-def info():
-    message = Markup("More info on <a href='https://github.com/ScienceAndIT/monkey-book' \
-                     target='_blank'> GitHub</a>")
-    flash(message)
-    page = int(request.args.get('page', 1))
-    pagination = Monkey.query.\
-        order_by(Monkey.monkeyname.asc()).paginate(page,
-                                                   per_page=current_app.config['MONKEYS_PER_PAGE'],
-                                                   error_out=False)
-    profiles = pagination.items
-    return render_template('view_profiles_by_names.html',
-                           profiles=profiles, pagination=pagination)
-
-
 # displaying all profiles sorted by names, default option for viewing monkeys
 @main.route('/profiles/by-names', methods=['GET', 'POST'])
 @login_required
