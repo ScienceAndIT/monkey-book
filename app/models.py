@@ -195,6 +195,8 @@ class Monkey(UserMixin, db.Model):
         if not self.is_following(monkey):
             f = Follow(follower=self, followed=monkey)
             db.session.add(f)
+        if self.bf_is_following(monkey):
+            self.bf_unfollow(monkey)
 
     def unfollow(self, monkey):
         f = self.followed.filter_by(followed_id=monkey.id).first()
@@ -211,22 +213,18 @@ class Monkey(UserMixin, db.Model):
     # bf - best friend
     def bf_follow(self, monkey):
         if not self.bf_is_following(monkey):
-            bf = BestFriend(best_friend_follower=self, best_friend_followed=monkey)
+            bf = BestFriend(best_friend_follower=self, best_friend_followed=monkey, best_friend_name=monkey.monkeyname)
             db.session.add(bf)
-        if not self.is_following(monkey):
-            f = Follow(follower=self, followed=monkey)
-            db.session.add(f)
+        if self.is_following(monkey):
+            self.unfollow(monkey)
 
     def bf_unfollow(self, monkey):
-        bf = self.best_friend_followed.filter_by(best_friend_name=monkey.monkeyname).first()
+        bf = self.best_friend_followed.filter_by(best_friend_id=monkey.id).first()
         if bf:
             db.session.delete(bf)
-        f = self.followed.filter_by(followed_id=monkey.id).first()
-        if f:
-            db.session.delete(f)
 
     def bf_is_following(self, monkey):
-        return self.best_friend_followed.filter_by(best_friend_name=monkey.monkeyname).first() is not None
+        return self.best_friend_followed.filter_by(best_friend_id=monkey.id).first() is not None
 
     def bf_is_followed_by(self, monkey):
         return self.best_friend_followers.filter_by(friend_id=monkey.id).first() is not None
