@@ -1,7 +1,9 @@
 monkey-book
 ===========
 
-Mini Facebook for monkeys :)
+Mini Facebook for monkeys :)  
+  
+http://monkey-book.herokuapps.com/  
 
 You can:  
 
