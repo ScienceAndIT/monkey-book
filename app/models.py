@@ -227,6 +227,7 @@ class Monkey(UserMixin, db.Model):
     def __repr__(self):
         return '<Monkey %r>' % self.monkeyname
 
+
 # required by Flask
 @login_manager.user_loader
 def load_monkey(monkey_id):
