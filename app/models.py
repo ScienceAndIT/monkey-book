@@ -10,7 +10,7 @@ from . import db, login_manager
 # class for friends (followers)
 class Follow(db.Model):
     __tablename__ = 'follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('monkeys.id'),
+    follower_id = db.Column(db.Integer, db.ForeignKey('monkeys.id', onupdate="CASCADE", ondelete="CASCADE"),
                             primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('monkeys.id'),
                             primary_key=True)
@@ -71,8 +71,7 @@ class Monkey(UserMixin, db.Model):
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
-                               lazy='dynamic',
-                               cascade='all, delete-orphan')
+                               lazy='dynamic')
     followers = db.relationship('Follow',
                                 foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed', lazy='joined'),
