@@ -3,7 +3,7 @@ monkey-book
 
 Mini Facebook for monkeys :)  
   
-http://monkey-book.herokuapps.com/  
+http://monkey-book.herokuapp.com/  
 
 You can:  
 
