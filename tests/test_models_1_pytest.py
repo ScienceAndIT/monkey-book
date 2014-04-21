@@ -5,6 +5,7 @@ from app.models import Monkey
 
 app = create_app('default')
 
+
 class TestMonkeyModel():
 
     def test_password_setter(self):

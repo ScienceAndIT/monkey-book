@@ -4,6 +4,7 @@ from app.models import Monkey, Follow
 
 app = create_app('default')
 
+
 class Test_Models():
 
     def test_valid_reset_token(self):
@@ -103,4 +104,3 @@ class Test_Models():
             assert (timestamp_before <= f.timestamp <= timestamp_after)
             f = m2.followers.all()[-1]
             assert (f.follower == m1)
-
