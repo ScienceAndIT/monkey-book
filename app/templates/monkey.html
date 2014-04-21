@@ -12,11 +12,36 @@
         <h4>Age: {{ monkey.age }}</h4>
         <h4>E-mail: <a href="mailto:{{ monkey.email }}">{{ monkey.email }}</a></h4>
         <p>
-            <a href="{{ url_for('.followers', monkeyname=monkey.monkeyname) }}">Monkeys who like you: <span class="badge">{{ monkey.followers.count() }}</span></a>
-            <a href="{{ url_for('.followed_by', monkeyname=monkey.monkeyname) }}">Number of monkeys you like: <span class="badge">{{ monkey.followed.count() }}</span></a>
-            {% if current_user.is_authenticated() and user != current_user and monkey.is_following(current_user) %}
-            | <span class="label label-default">Follows you</span>
+            {% if monkey.followers.count()>0 %}
+                <a href="{{ url_for('.followers', monkeyname=monkey.monkeyname) }}">Monkeys who like you: <span class="badge">{{ monkey.followers.count() }}</span></a><br/>
+            {% else %}
+                Monkeys who like you: <span class="badge">0</span><br/>
             {% endif %}
+
+            {% if monkey.followed.count()>0 %}
+                <a href="{{ url_for('.followed_by', monkeyname=monkey.monkeyname) }}">Monkeys you like: <span class="badge">{{ monkey.followed.count() }}</span></a>
+            {% else %}
+                Monkeys you like: <span class="badge">0</span><br/>
+            {% endif %}
+            {% if current_user.is_authenticated() and user != current_user and monkey.is_following(current_user) %}
+                | <span class="label label-default">You are friend for this monkey</span>
+            {% endif %}<br/>
+
+            {% if monkey.best_friend_followers.count()>0 %}
+                <a href="{{ url_for('.bf_follower', monkeyname=monkey.monkeyname) }}">You are best friend for: <span class="badge">{{ monkey.best_friend_followers.count() }}</span></a><br/>
+            {% else %}
+                You are not best friend for any monkey<br/>
+            {% endif %}
+
+            {% if monkey.best_friend_followed.count()>0 %}
+                <a href="{{ url_for('.bf_followed_by', monkeyname=monkey.monkeyname) }}">Your best friend: <span class="badge">{{ monkey.best_friend_followed.count() }}</span></a>
+            {% else %}
+                You don't have a best friend
+            {% endif %}
+            {% if current_user.is_authenticated() and user != current_user and monkey.bf_is_following(current_user) %}
+                | <span class="label label-default">You are best friend for this monkey</span>
+            {% endif %}
+
         </p>
         <p>
             {% if monkey == current_user %}
