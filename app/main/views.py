@@ -1,5 +1,6 @@
 from datetime import datetime
-from flask import render_template, redirect, url_for, current_app, flash, request, Markup
+from flask import render_template, redirect, url_for, current_app, flash,\
+    request, Markup
 from flask.ext.login import login_required, current_user
 from sqlalchemy import func
 from . import main
@@ -15,40 +16,46 @@ def index():
 
 
 # displaying all profiles sorted by names, default option for viewing monkeys
-@main.route('/profiles/by-names', methods=['GET', 'POST'])
+@main.route('/profiles/by-names')
 @login_required
 def view_profiles():
     page = int(request.args.get('page', 1))
     pagination = Monkey.query.\
-        order_by(Monkey.monkeyname.asc()).paginate(page,
-                                                   per_page=current_app.config['MONKEYS_PER_PAGE'],
-                                                   error_out=False)
+        order_by(Monkey.monkeyname.asc()).\
+        paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'],
+                 error_out=False)
     profiles = pagination.items
     return render_template('view_profiles_by_names.html',
                            profiles=profiles, pagination=pagination)
 
 
 # displaying all profiles sorted by number of friends
-@main.route('/profiles/by-number-of-friends', methods=['GET', 'POST'])
+@main.route('/profiles/by-number-of-friends')
 @login_required
 def view_profiles_by_number_of_friends():
     page = int(request.args.get('page', 1))
-    pagination = Monkey.query.outerjoin(Follow, Follow.follower_id == Monkey.id).\
-        group_by(Monkey.id).order_by(db.func.count(Follow.follower_id).desc()).\
-        paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'], error_out=False)
+    pagination = Monkey.query.\
+        outerjoin(Follow, Follow.follower_id == Monkey.id).\
+        group_by(Monkey.id).\
+        order_by(db.func.count(Follow.follower_id).desc()).\
+        paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'],
+                 error_out=False)
     profiles = pagination.items
     return render_template('view_profiles_by_number_of_friends.html',
                            profiles=profiles, pagination=pagination)
 
 
 # displaying all profiles sorted by name of the best friend
-@main.route('/profiles/by-name-of-the-best-friend', methods=['GET', 'POST'])
+@main.route('/profiles/by-name-of-the-best-friend')
 @login_required
 def view_profiles_by_name_of_the_best_friend():
     page = int(request.args.get('page', 1))
-    pagination = Monkey.query.outerjoin(BestFriend, BestFriend.friend_id == Monkey.id).\
-        filter(BestFriend.friend_id == Monkey.id).order_by(BestFriend.best_friend_name.asc()).\
-        paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'], error_out=False)
+    pagination = Monkey.query.\
+        outerjoin(BestFriend, BestFriend.friend_id == Monkey.id).\
+        filter(BestFriend.friend_id == Monkey.id).\
+        order_by(BestFriend.best_friend_name.asc()).\
+        paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'],
+                 error_out=False)
     profiles = pagination.items
     return render_template('view_profiles_by_name_of_the_best_friend.html',
                            profiles=profiles, pagination=pagination)
@@ -92,7 +99,8 @@ def edit_profile():
         current_user.age = form.age.data
         db.session.add(current_user)
         flash('Your profile has been updated.')
-        return redirect(url_for('.monkey', monkeyname=current_user.monkeyname))
+        return redirect(url_for('.monkey',
+                                monkeyname=current_user.monkeyname))
     form.monkeyname.data = current_user.monkeyname
     form.email.data = current_user.email
     form.age.data = current_user.age
@@ -113,14 +121,18 @@ def edit_profile_admin(id):
         monkey.role = form.role.data
         db.session.add(current_user)
         flash('The profile has been updated.')
-        return redirect(url_for('.monkey', monkeyname=monkey.monkeyname))
+        return redirect(url_for('.monkey',
+                                monkeyname=monkey.monkeyname))
     form.email.data = monkey.email
     form.monkeyname.data = monkey.monkeyname
     form.confirmed.data = monkey.confirmed
     form.role.data = monkey.role
-    return render_template('edit_profile.html', form=form, monkey=monkey)
+    return render_template('edit_profile.html',
+                           form=form,
+                           monkey=monkey)
 
 
+# displaying information about friends
 @main.route('/friend/<monkeyname>')
 @login_required
 def follow(monkeyname):
@@ -151,7 +163,7 @@ def unfollow(monkeyname):
     return redirect(url_for('.monkey', monkeyname=monkeyname))
 
 
-@main.route('/monkey-friends/<monkeyname>')
+@main.route('/followers/<monkeyname>')
 def followers(monkeyname):
     monkey = Monkey.query.filter_by(monkeyname=monkeyname).first()
     if monkey is None:
@@ -163,7 +175,8 @@ def followers(monkeyname):
         error_out=False)
     follows = [{'monkey': item.follower, 'timestamp': item.timestamp}
                for item in pagination.items]
-    return render_template('followers.html', monkey=monkey, title="Friends of",
+    return render_template('followers.html',
+                           monkey=monkey, title="Followers of",
                            endpoint='.followers', pagination=pagination,
                            follows=follows)
 
@@ -180,12 +193,14 @@ def followed_by(monkeyname):
         error_out=False)
     follows = [{'monkey': item.followed, 'timestamp': item.timestamp}
                for item in pagination.items]
-    return render_template('followers.html', monkey=monkey, title="Followed by",
+    return render_template('followers.html', monkey=monkey,
+                           title="Followed by",
                            endpoint='.followed_by', pagination=pagination,
                            follows=follows)
 
 
-@main.route('/best-friend/<monkeyname>')
+# displaying information about best friends
+@main.route('/new-best-friend/<monkeyname>')
 @login_required
 def bf_follow(monkeyname):
     monkey = Monkey.query.filter_by(monkeyname=monkeyname).first()
@@ -216,3 +231,39 @@ def bf_unfollow(monkeyname):
     current_user.bf_unfollow(monkey)
     flash('%s is not your best friend anymore.' % monkeyname)
     return redirect(url_for('.monkey', monkeyname=monkeyname))
+
+
+@main.route('/best-friend-follower/<monkeyname>')
+def bf_follower(monkeyname):
+    monkey = Monkey.query.filter_by(monkeyname=monkeyname).first()
+    if monkey is None:
+        flash('Invalid Monkey.')
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = monkey.best_friend_followers.paginate(
+        page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    best_friends = [{'monkey': item.best_friend_follower}
+                    for item in pagination.items]
+    return render_template('bf_followers.html',
+                           monkey=monkey, title=" - here is your best friend follower",
+                           endpoint='.bf_follower', pagination=pagination,
+                           best_friends=best_friends)
+
+
+@main.route('/best-friend-followed-by/<monkeyname>')
+def bf_followed_by(monkeyname):
+    monkey = Monkey.query.filter_by(monkeyname=monkeyname).first()
+    if monkey is None:
+        flash('Invalid monkey.')
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = monkey.best_friend_followed.paginate(
+        page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    best_friends = [{'monkey': item.best_friend_followed}
+               for item in pagination.items]
+    return render_template('bf_followers.html', monkey=monkey,
+                           title=" - here is your best friend",
+                           endpoint='.bf_followed_by', pagination=pagination,
+                           best_friends=best_friends)
