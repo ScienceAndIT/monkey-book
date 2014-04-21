@@ -10,8 +10,14 @@ from . import db, login_manager
 # class for friends (followers)
 class Follow(db.Model):
     __tablename__ = 'follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('monkeys.id', onupdate="CASCADE", ondelete="CASCADE"),
-                            primary_key=True)
+    follower_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'monkeys.id',
+            onupdate="CASCADE",
+            ondelete="CASCADE"),
+        primary_key=True
+    )
     followed_id = db.Column(db.Integer, db.ForeignKey('monkeys.id'),
                             primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
@@ -25,7 +31,9 @@ class Follow(db.Model):
         for i in range(count):
             m1 = Monkey.query.offset(randint(0, monkey_count - 1)).first()
             m2 = Monkey.query.offset(randint(0, monkey_count - 1)).first()
-            f = Follow(follower_id=m1.id, followed_id=m2.id, timestamp=forgery_py.date.date(True))
+            f = Follow(follower_id=m1.id,
+                       followed_id=m2.id,
+                       timestamp=forgery_py.date.date(True))
             db.session.add(f)
             try:
                 db.session.commit()
@@ -49,7 +57,9 @@ class BestFriend(db.Model):
         for i in range(count):
             m1 = Monkey.query.offset(randint(0, monkey_count - 1)).first()
             m2 = Monkey.query.offset(randint(0, monkey_count - 1)).first()
-            f = BestFriend(friend_id=m1.id, best_friend_name=m2.monkeyname, best_friend_id=m2.id)
+            f = BestFriend(friend_id=m1.id,
+                           best_friend_name=m2.monkeyname,
+                           best_friend_id=m2.id)
             db.session.add(f)
             try:
                 db.session.commit()
@@ -79,12 +89,17 @@ class Monkey(UserMixin, db.Model):
                                 cascade='all, delete-orphan')
     best_friend_followed = db.relationship('BestFriend',
                                            foreign_keys=[BestFriend.friend_id],
-                                           backref=db.backref('best_friend_follower', lazy='joined'),
+                                           backref=db.backref(
+                                               'best_friend_follower',
+                                               lazy='joined'),
                                            lazy='dynamic',
                                            cascade='all, delete-orphan')
     best_friend_followers = db.relationship('BestFriend',
-                                            foreign_keys=[BestFriend.best_friend_id],
-                                            backref=db.backref('best_friend_followed', lazy='joined'),
+                                            foreign_keys=[
+                                                BestFriend.best_friend_id],
+                                            backref=db.backref(
+                                                'best_friend_followed',
+                                                lazy='joined'),
                                             lazy='dynamic',
                                             cascade='all, delete-orphan')
 
@@ -203,30 +218,37 @@ class Monkey(UserMixin, db.Model):
             db.session.delete(f)
 
     def is_following(self, monkey):
-        return self.followed.filter_by(followed_id=monkey.id).first() is not None
+        return self.followed.filter_by(
+            followed_id=monkey.id).first() is not None
 
     def is_followed_by(self, monkey):
-        return self.followers.filter_by(follower_id=monkey.id).first() is not None
+        return self.followers.filter_by(
+            follower_id=monkey.id).first() is not None
 
     # helper functions to handle best friends followings
     # bf - best friend
     def bf_follow(self, monkey):
         if not self.bf_is_following(monkey):
-            bf = BestFriend(best_friend_follower=self, best_friend_followed=monkey, best_friend_name=monkey.monkeyname)
+            bf = BestFriend(best_friend_follower=self,
+                            best_friend_followed=monkey,
+                            best_friend_name=monkey.monkeyname)
             db.session.add(bf)
         if self.is_following(monkey):
             self.unfollow(monkey)
 
     def bf_unfollow(self, monkey):
-        bf = self.best_friend_followed.filter_by(best_friend_id=monkey.id).first()
+        bf = self.best_friend_followed.filter_by(
+            best_friend_id=monkey.id).first()
         if bf:
             db.session.delete(bf)
 
     def bf_is_following(self, monkey):
-        return self.best_friend_followed.filter_by(best_friend_id=monkey.id).first() is not None
+        return self.best_friend_followed.filter_by(
+            best_friend_id=monkey.id).first() is not None
 
     def bf_is_followed_by(self, monkey):
-        return self.best_friend_followers.filter_by(friend_id=monkey.id).first() is not None
+        return self.best_friend_followers.filter_by(
+            friend_id=monkey.id).first() is not None
 
     def __repr__(self):
         return '<Monkey %r>' % self.monkeyname
