@@ -3,7 +3,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'try to guess this secret key!'
+    SECRET_KEY = \
+        os.environ.get('SECRET_KEY') or 'try to guess this secret key!'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     MONKEYS_PER_PAGE = 4
     FOLLOWERS_PER_PAGE = 5
