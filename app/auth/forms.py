@@ -1,5 +1,6 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, PasswordField, BooleanField, IntegerField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, IntegerField,\
+    SubmitField
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
 from ..models import Monkey
@@ -15,14 +16,17 @@ class LoginForm(Form):
 
 class RegistrationForm(Form):
     monkeyname = StringField('Monkey name', validators=[
-        Required(), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-                                          'Monkey names must have only letters, '
-                                          'numbers, dots or underscores')])
+        Required(), Length(1, 64),
+        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+               'Monkey names must have only letters, '
+               'numbers, dots or underscores')])
     age = IntegerField('Age', validators=[Required()])
-    email = StringField('Email', validators=[Required(), Length(1, 64),
-                                             Email()])
-    password = PasswordField('Password',
-                             validators=[Required(), EqualTo('password2', message='Passwords must match.')])
+    email = StringField('Email', validators=[
+        Required(), Length(1, 64), Email()])
+    password = PasswordField(
+        'Password',
+        validators=[Required(),
+                    EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[Required()])
     submit = SubmitField('Register')
 

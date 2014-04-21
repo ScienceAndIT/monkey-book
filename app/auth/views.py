@@ -1,5 +1,6 @@
 from flask import render_template, redirect, request, url_for, flash
-from flask.ext.login import login_user, logout_user, login_required, current_user
+from flask.ext.login import login_user, logout_user, login_required,\
+    current_user
 from . import auth
 from .. import db
 from ..models import Monkey
@@ -32,7 +33,8 @@ def login():
         monkey = Monkey.query.filter_by(email=form.email.data).first()
         if monkey is not None and monkey.verify_password(form.password.data):
             login_user(monkey, form.remember_me.data)
-            return redirect(request.args.get('next') or url_for('main.view_profiles'))
+            return redirect(request.args.get('next') or
+                            url_for('main.view_profiles'))
         flash('Invalid monkey name or password.')
     return render_template('auth/login.html', form=form)
 

@@ -1,5 +1,6 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, IntegerField, BooleanField, TextField, SelectField, SubmitField
+from wtforms import StringField, IntegerField, BooleanField, TextField,\
+    SelectField, SubmitField
 from wtforms.validators import Required, Length, Email, Regexp
 from wtforms import ValidationError
 from ..models import Monkey
@@ -15,10 +16,12 @@ class NameForm(Form):
 class EditProfileForm(Form):
     email = StringField('Email', validators=[Required(), Length(1, 64),
                                              Email()])
-    monkeyname = StringField('New monkey name', validators=[
-        Required(), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-                                          'Monkey names must have only letters, '
-                                          'numbers, dots or underscores')])
+    monkeyname = StringField('New monkey name',
+                             validators=[
+                                 Required(), Length(1, 64),
+                                 Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+                                        'Monkey names must have only letters, '
+                                        'numbers, dots or underscores')])
     age = IntegerField('Real age', validators=[Required()])
     submit = SubmitField('Submit changes')
 
@@ -27,11 +30,13 @@ class EditProfileAdminForm(Form):
     email = StringField('Email', validators=[Required(), Length(1, 64),
                                              Email()])
     monkeyname = StringField('New monkey name', validators=[
-        Required(), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-                                          'Monkey names must have only letters, '
-                                          'numbers, dots or underscores')])
+        Required(), Length(1, 64),
+        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+               'Monkey names must have only letters, '
+               'numbers, dots or underscores')])
     age = IntegerField('Real age', validators=[Required()])
-    role = IntegerField('Role (0 - user, 1 - admin)', validators=[Required()])
+    role = IntegerField('Role (0 - user, 1 - admin)',
+                        validators=[Required()])
     confirmed = BooleanField('Confirmed')
     submit = SubmitField('Submit changes')
 
@@ -40,9 +45,11 @@ class EditProfileAdminForm(Form):
         self.monkey = monkey
 
     def validate_email(self, field):
-        if field.data != self.monkey.email and Monkey.query.filter_by(email=field.data).first():
+        if field.data != self.monkey.email and Monkey.query.\
+                filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
 
     def validate_username(self, field):
-        if field.data != self.monkey.monkeyname and Monkey.query.filter_by(monkeyname=field.data).first():
+        if field.data != self.monkey.monkeyname and Monkey.query.\
+                filter_by(monkeyname=field.data).first():
             raise ValidationError('Monkey name already in use.')
