@@ -21,7 +21,11 @@
                             <img class="img-rounded profile-thumbnail" src="{{ profile.gravatar(size=40) }}"/>
                             <span class="profile-name"> {{ profile.monkeyname }}</span>
                         </td>
-                        <td class="second-column">Monkey has <b>{{profile.followed.count() }}</b> monkey friends</td>
+                        <td class="second-column">Monkey has <b>{{profile.followed.count() }}</b> monkey friend(s)
+                            {% if profile.best_friend_followed.count()>0 %}
+                                and <b>1</b> best friend
+                            {% endif %}
+                        </td>
                         <td class="third-column">
                             {% if profile != current_user %}
                                 {% if not current_user.is_following(profile) %}
