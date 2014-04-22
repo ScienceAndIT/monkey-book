@@ -18,8 +18,14 @@ class Follow(db.Model):
             ondelete="CASCADE"),
         primary_key=True
     )
-    followed_id = db.Column(db.Integer, db.ForeignKey('monkeys.id'),
-                            primary_key=True)
+    followed_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'monkeys.id',
+            onupdate="CASCADE",
+            ondelete="CASCADE"),
+        primary_key=True
+    )
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     @staticmethod
@@ -44,9 +50,21 @@ class Follow(db.Model):
 # class for best friends
 class BestFriend(db.Model):
     __tablename__ = 'best_friends'
-    friend_id = db.Column(db.Integer, db.ForeignKey('monkeys.id'),
-                          primary_key=True, unique=True)
-    best_friend_id = db.Column(db.Integer, db.ForeignKey('monkeys.id'))
+    friend_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'monkeys.id',
+            onupdate="CASCADE",
+            ondelete="CASCADE"),
+        primary_key=True, unique=True)
+    best_friend_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'monkeys.id',
+            onupdate="CASCADE",
+            ondelete="CASCADE"),
+        primary_key=True
+    )
     best_friend_name = db.Column(db.String(64))
 
     @staticmethod
@@ -81,7 +99,8 @@ class Monkey(UserMixin, db.Model):
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
-                               lazy='dynamic')
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
     followers = db.relationship('Follow',
                                 foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed', lazy='joined'),
