@@ -20,7 +20,6 @@ def index():
 @main.route('/profiles/by-names/page/<int:page>')
 @login_required
 def view_profiles(page):
-    #page = int(request.args.get('page', 1))
     pagination = Monkey.query.\
         order_by(Monkey.monkeyname.asc()).\
         paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'],
@@ -35,11 +34,12 @@ def view_profiles(page):
 @main.route('/profiles/by-number-of-friends/page/<int:page>')
 @login_required
 def view_profiles_by_number_of_friends(page):
-    #page = int(request.args.get('page', 1))
     pagination = Monkey.query.\
         outerjoin(Follow, Follow.follower_id == Monkey.id).\
+        outerjoin(BestFriend, BestFriend.friend_id == Monkey.id).\
         group_by(Monkey.id).\
-        order_by(db.func.count(Follow.follower_id).desc()).\
+        order_by(db.func.count(Follow.follower_id).desc(),
+                 db.func.count(BestFriend.friend_id).desc()).\
         paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'],
                  error_out=False)
     profiles = pagination.items
@@ -52,7 +52,6 @@ def view_profiles_by_number_of_friends(page):
 @main.route('/profiles/by-name-of-the-best-friend/page/<int:page>')
 @login_required
 def view_profiles_by_name_of_the_best_friend(page):
-    #page = int(request.args.get('page', 1))
     pagination = Monkey.query.\
         outerjoin(BestFriend, BestFriend.friend_id == Monkey.id).\
         filter(BestFriend.friend_id == Monkey.id).\
