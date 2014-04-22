@@ -64,7 +64,7 @@ def view_profiles_by_name_of_the_best_friend(page):
 
 
 # removing monkey
-@main.route('/remove/<int:id>', methods=['GET', 'POST'])
+@main.route('/remove/<int:id>')
 @login_required
 def remove_monkey(id):
     monkey = Monkey.query.get_or_404(id)
