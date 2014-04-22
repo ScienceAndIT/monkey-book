@@ -38,9 +38,9 @@
                     </tr>
                     <tr>
                         <td class="first-column">Age: {{ profile.age }}</td>
-                        <td class="second-column">Monkey is a friend for <b>{{ profile.followers.count()}}</b>
+                        <td class="second-column">Monkey is a friend of <b>{{ profile.followers.count()}}</b>
                             {% if profile.best_friend_followers.count()>0 %}
-                            and best friend for <b>{{ profile.best_friend_followers.count()}}</b>
+                            and best friend of <b>{{ profile.best_friend_followers.count()}}</b>
                             {% endif %}
                             monkey(s)</td>
                         <td class="third-column">
