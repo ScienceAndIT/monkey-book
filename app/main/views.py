@@ -16,10 +16,11 @@ def index():
 
 
 # displaying all profiles sorted by names, default option for viewing monkeys
-@main.route('/profiles/by-names')
+@main.route('/profiles/by-names', defaults={'page': 1})
+@main.route('/profiles/by-names/page/<int:page>')
 @login_required
-def view_profiles():
-    page = int(request.args.get('page', 1))
+def view_profiles(page):
+    #page = int(request.args.get('page', 1))
     pagination = Monkey.query.\
         order_by(Monkey.monkeyname.asc()).\
         paginate(page, per_page=current_app.config['MONKEYS_PER_PAGE'],
@@ -30,10 +31,11 @@ def view_profiles():
 
 
 # displaying all profiles sorted by number of friends
-@main.route('/profiles/by-number-of-friends')
+@main.route('/profiles/by-number-of-friends', defaults={'page': 1})
+@main.route('/profiles/by-number-of-friends/page/<int:page>')
 @login_required
-def view_profiles_by_number_of_friends():
-    page = int(request.args.get('page', 1))
+def view_profiles_by_number_of_friends(page):
+    #page = int(request.args.get('page', 1))
     pagination = Monkey.query.\
         outerjoin(Follow, Follow.follower_id == Monkey.id).\
         group_by(Monkey.id).\
@@ -46,10 +48,11 @@ def view_profiles_by_number_of_friends():
 
 
 # displaying all profiles sorted by name of the best friend
-@main.route('/profiles/by-name-of-the-best-friend')
+@main.route('/profiles/by-name-of-the-best-friend', defaults={'page': 1})
+@main.route('/profiles/by-name-of-the-best-friend/page/<int:page>')
 @login_required
-def view_profiles_by_name_of_the_best_friend():
-    page = int(request.args.get('page', 1))
+def view_profiles_by_name_of_the_best_friend(page):
+    #page = int(request.args.get('page', 1))
     pagination = Monkey.query.\
         outerjoin(BestFriend, BestFriend.friend_id == Monkey.id).\
         filter(BestFriend.friend_id == Monkey.id).\
@@ -163,13 +166,13 @@ def unfollow(monkeyname):
     return redirect(url_for('.monkey', monkeyname=monkeyname))
 
 
-@main.route('/followers/<monkeyname>')
-def followers(monkeyname):
+@main.route('/followers/<monkeyname>', defaults={'page': 1})
+@main.route('/followers/<monkeyname>/page/<int:page>')
+def followers(monkeyname, page):
     monkey = Monkey.query.filter_by(monkeyname=monkeyname).first()
     if monkey is None:
         flash('Invalid Monkey.')
         return redirect(url_for('.index'))
-    page = request.args.get('page', 1, type=int)
     pagination = monkey.followers.paginate(
         page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
         error_out=False)
@@ -181,13 +184,13 @@ def followers(monkeyname):
                            follows=follows)
 
 
-@main.route('/followed-by/<monkeyname>')
-def followed_by(monkeyname):
+@main.route('/followed-by/<monkeyname>', defaults={'page': 1})
+@main.route('/followed-by/<monkeyname>/page/<int:page>')
+def followed_by(monkeyname, page):
     monkey = Monkey.query.filter_by(monkeyname=monkeyname).first()
     if monkey is None:
         flash('Invalid monkey.')
         return redirect(url_for('.index'))
-    page = request.args.get('page', 1, type=int)
     pagination = monkey.followed.paginate(
         page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
         error_out=False)
@@ -199,7 +202,7 @@ def followed_by(monkeyname):
                            follows=follows)
 
 
-# displaying information about best friends
+#Four functions below are to display information about best friends
 @main.route('/new-best-friend/<monkeyname>')
 @login_required
 def bf_follow(monkeyname):
@@ -233,13 +236,13 @@ def bf_unfollow(monkeyname):
     return redirect(url_for('.monkey', monkeyname=monkeyname))
 
 
-@main.route('/best-friend-follower/<monkeyname>')
-def bf_follower(monkeyname):
+@main.route('/best-friend-follower/<monkeyname>', defaults={'page': 1})
+@main.route('/best-friend-follower/<monkeyname>/page/<int:page>')
+def bf_follower(monkeyname, page):
     monkey = Monkey.query.filter_by(monkeyname=monkeyname).first()
     if monkey is None:
         flash('Invalid Monkey.')
         return redirect(url_for('.index'))
-    page = request.args.get('page', 1, type=int)
     pagination = monkey.best_friend_followers.paginate(
         page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
         error_out=False)
@@ -251,13 +254,13 @@ def bf_follower(monkeyname):
                            best_friends=best_friends)
 
 
-@main.route('/best-friend-followed-by/<monkeyname>')
-def bf_followed_by(monkeyname):
+@main.route('/best-friend-followed-by/<monkeyname>', defaults={'page': 1})
+@main.route('/best-friend-followed-by/<monkeyname>/page/<int:page>')
+def bf_followed_by(monkeyname, page):
     monkey = Monkey.query.filter_by(monkeyname=monkeyname).first()
     if monkey is None:
         flash('Invalid monkey.')
         return redirect(url_for('.index'))
-    page = request.args.get('page', 1, type=int)
     pagination = monkey.best_friend_followed.paginate(
         page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
         error_out=False)
