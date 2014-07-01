@@ -287,9 +287,6 @@ class Monkey(UserMixin, db.Model):
             return None
         return Monkey.query.get(data['id'])
 
-    def __repr__(self):
-        return '<User %r>' % self.username
-
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
