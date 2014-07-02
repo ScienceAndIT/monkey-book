@@ -1,7 +1,7 @@
 from datetime import datetime
 import hashlib
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app, request
+from flask import current_app, request, url_for
 from flask.ext.login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -272,6 +272,13 @@ class Monkey(UserMixin, db.Model):
 
     def __repr__(self):
         return '<Monkey %r>' % self.monkeyname
+    
+    def to_json(self):
+        json_monkey = {
+            'url': url_for('api.get_monkey', id=self.id, _external=True),
+            'monkeynamename': self.monkeyname
+        }
+        return json_monkey
     
     def generate_auth_token(self, expiration):
         s = Serializer(current_app.config['SECRET_KEY'],
