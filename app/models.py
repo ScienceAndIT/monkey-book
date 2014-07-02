@@ -296,7 +296,7 @@ class Monkey(UserMixin, db.Model):
 
 
 class AnonymousUser(AnonymousUserMixin):
-    def can(self, permissions):
+    def can(self):
         return False
 
     def is_administrator(self):
