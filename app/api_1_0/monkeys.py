@@ -12,4 +12,3 @@ def get_monkey(id):
 @api.route('/monkeys/<int:id>/friends/')
 def get_monkey_friends(id):
     pass
-
